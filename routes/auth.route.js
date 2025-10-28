@@ -5,9 +5,15 @@ import {Register, login } from '../controller/auth.controller.js'
 const authRouter = Router()
 
 authRouter.post('/register', Register)
-//? http://localhost:5000/api/auth/register
+// development
+//? http://localhost:5000/api/auth/register 
+// production 
+//? https://bookworm-backend-oyv7.onrender.com/api/auth/register 
 
 authRouter.post('/login', login)
+// development
 //? http://localhost:5000/api/auth/login
+// production 
+//? https://bookworm-backend-oyv7.onrender.com/api/auth/login
 
 export default authRouter 
