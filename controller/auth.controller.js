@@ -55,34 +55,37 @@ export const Register = async (req,res,next) =>{
         const profileImage =  `${Dicebear}=${username}`;
 
         const user = new User({
-            username,
-            email,
-            password:hashpasswoed,
-            ProfileImage:profileImage,
+          username,
+          email,
+          password:hashpasswoed,
+          ProfileImage:profileImage,
         });
-
+        
         // jwt 
-
+        
         const toekn = generateToekn(user._id)
-
+        
         await user.save();
-
+        
         res.status(201).json({user:{
                                    id:user._id,
                                    username:user.username,
                                    email:user.email,
                                    profileImage:user.ProfileImage
-        },Toekn:toekn,message:`success New user created`})
-
-        Session.endSession()
-
-       } catch (error) {
-        await Session.abortTransaction()
-        Session.endSession()
-        console.error(` register function error:${error}`)
-        res.status(500).json({message:`Internal Server Error`})
-       }
-}
+                                  },Toekn:toekn,message:`success New user created`})
+                                  
+                                  Session.endSession()
+                   
+                              
+       next()                     
+      }catch (error) {
+                                  await Session.abortTransaction()
+                                  Session.endSession()
+                                  console.error(`register function error:${error}`)
+                                  res.status(500).json({message:`Internal Server Error`})
+                                }
+                              }
+                  
 
 
 //* login function
