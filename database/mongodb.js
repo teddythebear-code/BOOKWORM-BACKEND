@@ -10,11 +10,11 @@ const connectDB = async ()=>{
     try {
 
         const dataDB = await mongoose.connect(mongodb_url)
-        console.log(`database live: mongodb` );
+        console.log(`database live: mongoDB_01:${dataDB}` );
     } catch (error) {
-        console.log(`Error connect to database ${error}`);
+        console.log(`Error connect to mongoDB_01 database:${error}`);
         process.exit(1)
     }
 }
 
-export default connectDB
+export default connectDB;

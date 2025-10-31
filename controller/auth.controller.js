@@ -14,13 +14,14 @@ const Dicebear = process.env.Dicebear
 
 
 //* register function
-export const Register = async (req,res,next) =>{
+export const Register = async (req,res) =>{
 
   const Session = await mongoose.startSession()
   Session.startTransaction()
 
        try {
 
+        //* geting the user input
         const {username,email,password} = req.body
 
         if (!username || !email || !password) {
@@ -36,7 +37,7 @@ export const Register = async (req,res,next) =>{
         }
 
 
-       //  chicking if user email and user exists
+       //*  chicking if user email and user exists
         const existsemail = await User.findOne({email})
         if (existsemail) {
             return res.status(409).json({message:"User with this email already exists."})  
@@ -46,18 +47,19 @@ export const Register = async (req,res,next) =>{
         if (existsuser) {
             return res.status(409).json({message:"Username already exists."})  
         }
-        //
+
+
+        //* password
         const salt = await bcrypt.genSalt(10);
-        const hashpasswoed = await bcrypt.hash(password,salt);
+        const hashpassword = await bcrypt.hash(password,salt);
 
-        //make the user 
-
+        //* Makeing the user profile Image
         const profileImage =  `${Dicebear}=${username}`;
 
         const user = new User({
           username,
           email,
-          password:hashpasswoed,
+          password:hashpassword,
           ProfileImage:profileImage,
         });
         
@@ -72,12 +74,13 @@ export const Register = async (req,res,next) =>{
                                    username:user.username,
                                    email:user.email,
                                    profileImage:user.ProfileImage
-                                  },Toekn:toekn,message:`success New user created`})
+                              },
+                              Toekn:toekn,
+                              message:`success New user created`})
                                   
-                                  Session.endSession()
+      Session.endSession()
                    
-                              
-       next()                     
+                                   
       }catch (error) {
                                   await Session.abortTransaction()
                                   Session.endSession()
@@ -99,13 +102,13 @@ export const login = async (req,res,next) =>{
         return res.status(400).json({message:'invalid credentials'})
       }
 
-      const isUserPassword = await bcrypt.compare(password,user.password)
+      const isUserPassword = bcrypt.compare(password,user.password)
 
       if (!isUserPassword) {
         return res.status(400).json({message:'invalid credentials'})
       }
 
-     const toekn = generateToekn(user._id)
+     const toekn =  generateToekn(user._id)
 
        res.status(201).json({user:{
                                    id:user._id,
